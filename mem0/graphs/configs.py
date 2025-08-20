@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -99,6 +99,6 @@ class GraphStoreConfig(BaseModel):
         elif provider == "neptune":
             return NeptuneConfig(**v).__dict__
         elif provider == "kuzu":
-            return KuzuConfig(**v).__dict__
+            return v
         else:
             raise ValueError(f"Unsupported graph store provider: {provider}")
