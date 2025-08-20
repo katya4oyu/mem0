@@ -87,7 +87,7 @@ class GraphStoreConfig(BaseModel):
         description="Custom prompt to fetch entities from the given text", default=None
     )
 
-    @field_validator("config", mode="before")
+    @field_validator("config")
     def validate_config(cls, v, info):
         provider = (getattr(info, "data", None) or {}).get("provider")
         if not isinstance(v, dict):
