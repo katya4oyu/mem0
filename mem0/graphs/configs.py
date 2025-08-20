@@ -93,12 +93,12 @@ class GraphStoreConfig(BaseModel):
         if not isinstance(v, dict):
             raise TypeError("config must be a dict or a supported model")
         if provider == "neo4j":
-            return Neo4jConfig(**v)
+            return Neo4jConfig(**v).__dict__
         elif provider == "memgraph":
-            return MemgraphConfig(**v)
+            return MemgraphConfig(**v).__dict__
         elif provider == "neptune":
-            return NeptuneConfig(**v)
+            return NeptuneConfig(**v).__dict__
         elif provider == "kuzu":
-            return KuzuConfig(**v)
+            return KuzuConfig(**v).__dict__
         else:
             raise ValueError(f"Unsupported graph store provider: {provider}")
