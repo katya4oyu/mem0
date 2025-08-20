@@ -79,7 +79,7 @@ class GraphStoreConfig(BaseModel):
         description="Provider of the data store (e.g., 'neo4j', 'memgraph', 'neptune', 'kuzu')",
         default="neo4j",
     )
-    config: Union[Neo4jConfig, MemgraphConfig, NeptuneConfig, KuzuConfig] = Field(
+    config: Optional[dict] = Field(
         description="Configuration for the specific data store", default=None
     )
     llm: Optional[LlmConfig] = Field(description="LLM configuration for querying the graph store", default=None)
@@ -90,8 +90,6 @@ class GraphStoreConfig(BaseModel):
     @field_validator("config", mode="before")
     def validate_config(cls, v, info):
         provider = (getattr(info, "data", None) or {}).get("provider")
-        if isinstance(v, (Neo4jConfig, MemgraphConfig, NeptuneConfig, KuzuConfig)):
-            return v
         if not isinstance(v, dict):
             raise TypeError("config must be a dict or a supported model")
         if provider == "neo4j":
