@@ -87,16 +87,20 @@ class GraphStoreConfig(BaseModel):
         description="Custom prompt to fetch entities from the given text", default=None
     )
 
-    @field_validator("config")
-    def validate_config(cls, v, values):
-        provider = values.data.get("provider")
+    @field_validator("config", mode="before")
+    def validate_config(cls, v, info):
+        provider = (getattr(info, "data", None) or {}).get("provider")
+        if isinstance(v, (Neo4jConfig, MemgraphConfig, NeptuneConfig, KuzuConfig)):
+            return v
+        if not isinstance(v, dict):
+            raise TypeError("config must be a dict or a supported model")
         if provider == "neo4j":
-            return Neo4jConfig(**v.model_dump())
+            return Neo4jConfig(**v)
         elif provider == "memgraph":
-            return MemgraphConfig(**v.model_dump())
+            return MemgraphConfig(**v)
         elif provider == "neptune":
-            return NeptuneConfig(**v.model_dump())
+            return NeptuneConfig(**v)
         elif provider == "kuzu":
-            return KuzuConfig(**v.model_dump())
+            return KuzuConfig(**v)
         else:
             raise ValueError(f"Unsupported graph store provider: {provider}")
